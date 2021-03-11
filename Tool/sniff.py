@@ -11,6 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC, NuSVC, LinearSVC
 
 
+parts = []
 common = dict()
 
 def mode(sample):
@@ -53,7 +54,7 @@ def filterML(qr):
 
 def filterFQDN(qr):
     global common
-    parts = []
+    global parts
     if qr not in common.keys():
         count=0
         l1=0
@@ -70,9 +71,9 @@ def filterFQDN(qr):
             return False
         sim2=l1/l2
         if sim <= 0.75 and sim2 >= 0.8:
-            print("Attack " + qr)
+            print("DNS Tunneling Query " + qr)
         else:
-            print("OK " + qr)
+            print("Genuine Query " + qr)
         for p in qr.split("."):
             parts.append(p)
         common[qr] = 1
@@ -88,4 +89,11 @@ def filterQuery(x):
     filterFQDN(qr)
     filterML(qr)
 
+def testDNSTunneling():
+    qrs = ["dnscat.61eb014a4ad0898579ce800018fb2ab880", "dnscat.1361014a4af9480966b594001e35223999", "dnscat.5fb9014a4acf5551cf7fea00280c26976a"]
+    for qr in qrs:
+        filterFQDN(qr)
+        filterML(qr)
+
+testDNSTunneling()
 a=sniff(lfilter=lambda x: x.haslayer(DNS) and x.getlayer(DNS).qr == 0 and filterQuery(x), count=10)
