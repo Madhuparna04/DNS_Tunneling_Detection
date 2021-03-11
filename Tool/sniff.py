@@ -45,9 +45,9 @@ def filterML(qr):
     for i in range(0,len(test_data)):
         final_pred = np.append(final_pred, mode([pred1[i], pred2[i], pred3[i]]))
 
-    if final_pred[0] == 1:
+    if final_pred[0] == 0:
         print("Genuine Query "  + qr)
-    else:
+    elif final_pred[0] == 1:
         print("DNS Tunneling Query " + qr)
     end = time.time()
     print("The time taken is: ",(end-start)*1000,"millisec")
